@@ -1,0 +1,152 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  background-image: url("images/table.png");
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
+main, .splash {
+width: 100%;
+max-width: 650px;
+margin: 40px auto;
+padding: 0 10px;
+}
+
+/* ----SPLASH PAGE ----*/
+form {
+display: flex;
+flex-direction: column;
+justify-content: space-around; 
+}
+
+input {
+display: block;
+min-width: 20em;
+margin: 0.5em auto 1em auto;
+border: none;
+padding: 10px;
+}
+
+legend {
+text-align: left;
+}
+
+fieldset {
+border: 3px solid #016f32;
+border-radius: 2px;
+margin-bottom: 1em; 
+padding: 1em;
+box-shadow: 3px 0px 5px black, -3px 0px 5px black; 
+}
+
+/* ---- MAIN PAGE ---- */
+
+/* TYPOGRAPHY */
+h1 {
+color: goldenrod; 
+font-size: clamp(1rem, 25vmin, 4rem);
+padding: 0.2em;
+margin:0;
+}
+
+h2 {
+  color: goldenrod;
+  text-transform: uppercase;
+  margin-top: 1.2em;
+}
+
+#message-el {
+font-style: italic;
+font-size: 2em;
+margin: 0;
+}
+
+.blackjack-text-effect {
+--bg-size: 400%;
+--color-one: orangered;
+--color-two: goldenrod;
+background: linear-gradient(
+              90deg,
+              var(--color-one),
+              var(--color-two),
+              var(--color-one)
+            ) 0 0 / var(--bg-size) 100%;
+color: transparent;
+background-clip: text;
+-webkit-background-clip: text; /*necessary in Chrome/Brave*/
+animation: move-bg 8s infinite linear;
+}
+
+/*comment out keyframe below to turn off the h1 animation*/
+@keyframes move-bg {
+to {
+  background-position: var(--bg-size) 0;
+}
+
+0% {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 0 rgba(218, 165, 32, 0.7);
+}
+
+70% {
+  transform: scale(1);
+  box-shadow: 0 0 0 15px rgba(218, 165, 32, 0); /* 4th value is the spread */
+}
+
+100% {
+  transform: scale(0.95);
+  box-shadow: 0 0 0 0 rgba(218, 165, 32, 0);
+}
+}
+
+/* LAYOUT */
+
+.container {
+margin: auto;
+display: flex;
+gap: 10px;
+flex-direction: row;
+flex-wrap: wrap;
+justify-content: space-around;
+align-items: center;
+max-width: 1200px;}
+
+.btn-container {
+display: flex;
+justify-content: center;
+gap: 5px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+
+/* BUTTONS */
+
+button {
+color: #016f32;
+width: 150px;
+background: goldenrod;
+padding-top: 5px;
+padding-bottom: 5px;
+font-weight: bold;
+border:1px solid #016f32;
+border-radius: 2px;
+margin-bottom: 5px;
+box-shadow: 3px 3px 5px black;
+}
+
+button:active {
+transform: translate(2px, 2px);
+color: goldenrod;
+background-color: #016f32;
+border: 1px solid goldenrod;
+}
