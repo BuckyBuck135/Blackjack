@@ -114,12 +114,13 @@ to {
 .container {
 margin: auto;
 display: flex;
-gap: 10px;
+gap: 3em;
 flex-direction: row;
-flex-wrap: wrap;
+/* flex-wrap: wrap; */
 justify-content: space-around;
 align-items: center;
-max-width: 1200px;}
+max-width: 1200px;
+}
 
 .btn-container {
 display: flex;
@@ -127,6 +128,23 @@ justify-content: center;
 gap: 5px;
 flex-wrap: wrap;
 margin-bottom: 20px;
+}
+
+.cards-container {
+  display: flex;
+  gap: 0.5em;
+}
+
+.card-slot {
+  width: 80px;
+  aspect-ratio: 5/7;
+  border: 1px solid black;
+  border-radius: 5px
+}
+
+.card {
+  width: 100%;
+  display: block;
 }
 
 /* BUTTONS */
@@ -149,4 +167,10 @@ transform: translate(2px, 2px);
 color: goldenrod;
 background-color: #016f32;
 border: 1px solid goldenrod;
+}
+
+.disabled {
+  background-color: grey;
+  color: darkgrey;
+  cursor: not-allowed;
 }
