@@ -5,7 +5,8 @@ let playerCards = [];
 let dealerCards = [];
 
 let hasBlackjack = false;
-let sum = 0;
+let playerSum = 0;
+let dealerSum = 0;
 let message = "";
 let deckId = "";
 
@@ -76,25 +77,30 @@ function drawCards(number, element, cardsArray) {
             // determine card value
             const valueOptions = ["2", "3", "4", "5", "6", "7", "8", "9", 
             "10", "JACK", "QUEEN", "KING", "ACE"]
+            
             const cardValueIndex = valueOptions.indexOf(data.cards[0].value)
 
-            // check ACE - change of value NOT WORKING
-            if (cardValueIndex == 12 ) {
-                if (cardsArray.length == 0) {
-                    console.log(11)
+                // check ACE - change of value NOT WORKING
+                if (cardValueIndex == 12 ) {
+                    playerSum += 1
+                    // console.log(1)
+                
+                // check JACK QUEEN KING
+                } else if (cardValueIndex > 8 ) {
+                    playerSum += 10
+                    // console.log(10)
+
+                // check 2 to 10
                 } else {
-                    console.log(1)
+                    playerSum += (cardValueIndex+2)
+                    // console.log(cardValueIndex+2)
                 }
             
-            // check JACK QUEEN KING
-            } else if (cardValueIndex > 8 ) {
-                console.log(10)
-
-            // check 2 to 10
-            } else {
-                console.log(cardValueIndex+2)
-            }
-
+            // render player sum
+            setTimeout(() => {
+                playerSumEl.textContent = "Sum: " + playerSum;
+              }, 500)
+            
 
 
             //disable "HIT" button at 5 cards
@@ -127,8 +133,8 @@ function startGame() {
     enable(drawCardBtn)
     // find a way to empty card array and element.children innerHTML
     
-    drawCards(2, playerContainer, playerCards)
-    drawCards(2, dealerContainer, dealerCards)
+    drawCards(1, playerContainer, playerCards)
+    drawCards(1, playerContainer, playerCards)
 
 
 //     dealerCardsEl.style.visibility = 'hidden';
@@ -141,9 +147,7 @@ function startGame() {
         // let playerSecondCard = fetchCard();
         // let dealerFirstCard = fetchCard();
         // let dealerSecondCard = fetchCard();
-        // playerCards = [fetchCard(), fetchCard()];
 //         playerSum = playerFirstCard + playerSecondCard;
-        // dealerCards = [fetchCard(), fetchCard()];
 //         dealerSum = dealerFirstCard + dealerSecondCard;
 //         drawCardBtn.style.backgroundColor = '';
 //         compareSumsBtn.style.background = '';
