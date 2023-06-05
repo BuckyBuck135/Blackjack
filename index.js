@@ -57,7 +57,7 @@ dealerSumEl.style.visibility = "hidden";
 getNewDeck()
 
 function getNewDeck() {
-    fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+    fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
         .then(res => res.json())
         .then(data => {
             deckId = data.deck_id
@@ -66,7 +66,7 @@ function getNewDeck() {
 
 // draws cards for Player
 function drawCards(number) {
-    fetch(`https://deckofcards.com/api/deck/${deckId}/draw/?count=${number}`)
+    fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=${number}`)
         .then(res =>res.json())
         .then(data => {
 
@@ -79,122 +79,14 @@ function drawCards(number) {
         if(playerCards.length === 5) {
             disable(hitBtn)
         }
-
-        renderPlayerSum()
+        handlePlayerSum()
         renderPlayerCards()
     })
 }
 
-function getPlayerSum() {
-    let playerSum = 0; 
-    for(let i =0; i<playerCards.length; i++) {
-        let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
-        // check ACE - currently = 1
-        if (cardValueIndex == 12 ) {
-                playerSum += 1
-            
-        // check JACK QUEEN KING
-        } else if (cardValueIndex > 8 ) {
-            playerSum += 10
-
-        // check 2 to 10
-        } else {
-            playerSum += (cardValueIndex+2)
-        }
-    }
-    return playerSum
-}
-
-function renderPlayerSum() {
-    const playerSum = getPlayerSum()
-    playerSumEl.textContent = "Sum: " + playerSum
-}
-
-function renderPlayerCards() {
-    for (let i = 0; i<playerCards.length; i++) {
-        playerContainer.children[i].innerHTML = `
-    <img src=${playerCards[i].image} class="card" alt="A random playing card." crossorigin="anonymous">
-        `
-    }
-}
-
-    
-function newRound() {
-    console.log(deckId)
-    resetBoardforNewRound()
-    drawCards(2)
-    fetchCardsDealer()
-}
-
-// function renderGame() {
-//     playerCardsEl.textContent = "Cards: ";
-//     dealerCardsEl.textContent = "Cards: ";
-
-//     //Logic for player//
-//     if (playerSum <= 20) {
-//         message = "Draw a card?";
-//     } else if (playerSum === 21) {
-//         message = "Blackjack!";
-//         hasBlackjack = true;
-//         dealerCardsEl.style.visibility = 'visible';
-//         dealerSumEl.style.visibility = 'visible';
-//     } else {
-//         message = "Bust...";
-//         isAlive = false;
-//         greyOut();
-//         dealerCardsEl.style.visibility = 'visible';
-//         dealerSumEl.style.visibility = 'visible';
-//     }
-//     if (hasBlackjack===true) {
-//         h1El.classList.add("blackjack-text-effect");
-//     }
-//     //Logic for dealer - draws until hard 16//
-//     while (dealerSum <16) {
-//         let newCard = getRandomCard();
-//         dealerCards.push(newCard)
-//         dealerSum += newCard;
-//     }
-    
-//     playerSumEl.textContent = "Sum: " + playerSum;
-//     dealerSumEl.textContent = "Sum: " + dealerSum;
-//     for (let i = 0; i < playerCards.length; i++) {
-//         playerCardsEl.textContent += playerCards[i] + " ";
-//     }
-//     for (let i = 0; i < dealerCards.length; i++) {
-//         dealerCardsEl.textContent += dealerCards[i] + " ";
-//     }
-//     messageEl.textContent = message;
-// }
-
-function hit() {
-    if(playerCards.length < 5) {
-        drawCards(1)
-    } 
-
-    const playerSum = compareSums()
-    if (playerSum > 21) {
-        message = "Bust..."
-        revealDealerCards()
-    } else if (playerSum <= 20) {
-        message = "Draw a card?";
-    } else if (playerSum === 21) {
-        message = "Blackjack!";
-        h1El.classList.add("blackjack-text-effect");
-        revealDealerCards()
-
-    }
-    messageEl.textContent = message;
-
-}
-
-function stay() {
-    enable(newRoundBtn) 
-    compareSums()
-    revealDealerCards()
-}   
 
 function fetchCardsDealer() {
-    fetch(`https://deckofcards.com/api/deck/${deckId}/draw/?count=1`)
+    fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
     .then(res =>res.json())
     .then(data => {
             //push cards to array
@@ -232,6 +124,85 @@ function fetchCardsDealer() {
     })
 }
 
+function getPlayerSum() {
+    let playerSum = 0; 
+    for(let i =0; i<playerCards.length; i++) {
+        let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
+        // check ACE - currently = 1
+        if (cardValueIndex == 12 ) {
+                playerSum += 1
+            
+        // check JACK QUEEN KING
+        } else if (cardValueIndex > 8 ) {
+            playerSum += 10
+
+        // check 2 to 10
+        } else {
+            playerSum += (cardValueIndex+2)
+        }
+    }
+    return playerSum
+}
+
+function handlePlayerSum() {
+    const playerSum = getPlayerSum()
+    playerSumEl.textContent = "Sum: " + playerSum
+
+    if (playerSum > 21) {
+        message = "Bust..."
+        revealDealerCards()
+        enable(newRoundBtn)
+        disable(hitBtn) 
+        disable(stayBtn) 
+    } else if (playerSum <= 20) {
+        message = "Draw a card?";
+    } else if (playerSum === 21) {
+        message = "Blackjack! Double money!";
+        h1El.classList.add("blackjack-text-effect");
+        revealDealerCards()
+        enable(newRoundBtn)
+        disable(hitBtn) 
+        disable(stayBtn) 
+    } else if (playerCards.length == 5 && playerSum <21) {
+        message = "You win! Double money!";
+    } else if (playerCards.length == 5 && playerSum === 21) {
+        message = "You win! Triple money!";
+    }
+
+    // handle length = 5 && playerSum < 21
+    messageEl.textContent = message;
+
+}
+
+function renderPlayerCards() {
+    for (let i = 0; i<playerCards.length; i++) {
+        playerContainer.children[i].innerHTML = `
+    <img src=${playerCards[i].image} class="card" alt="A random playing card." crossorigin="anonymous">
+        `
+    }
+}
+
+    
+function newRound() {
+    resetBoardforNewRound()
+    drawCards(2)
+    fetchCardsDealer()
+}
+
+function hit() {
+    if(playerCards.length < 5) {
+        drawCards(1)
+    } 
+}
+
+function stay() {
+    enable(newRoundBtn)
+    disable(hitBtn) 
+    disable(stayBtn) 
+    compareSums()
+    revealDealerCards()
+}   
+
 
 function compareSums() {
     const playerSum = getPlayerSum()
@@ -245,8 +216,11 @@ function compareSums() {
         // isAlive === false
         message = "You lose..."
     } else if (dealerSum === 21) {
-        // isAlive === false
-        message = "Dealer has Blackjack...You lose..."
+        message = "Dealer has Blackjack...You lose double money!"
+    } else if (dealerCards.length === 5 && dealerSum < 21) {
+        message = "Dealer has Blackjack...You lose double money!"
+    } else if (dealerCards.length === 5 && dealerSum === 21) {
+        message = "Dealer has Blackjack...You lose triple money!"
     } else {
         message = "Draw!"
     }
@@ -262,8 +236,7 @@ function revealDealerCards() {
 }
 function resetBoardforNewRound() {
     getNewDeck()
-    playerCards = [];
-    dealerCards = [];
+
     isAlive = true;
     hasBlackjack = false;
     dealerSum = 0;
@@ -273,8 +246,16 @@ function resetBoardforNewRound() {
     enable(stayBtn)
     h1El.classList.remove("blackjack-text-effect");
     dealerSumEl.style.visibility = "hidden";
-    dealerContainer.children.innerHTML = ""
-    playerContainer.children.innerHTML = ""
+
+    for (let i = 0; i<playerCards.length; i++) {
+        playerContainer.children[i].innerHTML = ""
+    }
+    
+    for (let i = 0; i<dealerCards.length; i++) {
+        dealerContainer.children[i].innerHTML = ""
+    }
+    playerCards = [];
+    dealerCards = [];
 }
 
 function disable(button) {
