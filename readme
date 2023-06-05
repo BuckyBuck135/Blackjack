@@ -11,12 +11,11 @@
  https://www.youtube.com/watch?v=NxVCq4p0Kb0
 
  ******** KNOWN ISSUES / QUESTIONS ********
- - JS: How to clean up the code, especially the startGame() function. Perhaps create new sub-functions?
+ - removing the "number" paremeter in drawCards throws error / drawCards(1, playerContainer, playerCards)
  
 ******** TO DO ********
  - JS: Simplify the HIT and STAY conditional styles in JS (probably with query selector etc. similar to the h1 effect)
  - Implement winning/losing chips 
- - Implement card images, buildDeck() and shuffleDeck() functions for a better simulation of a real card game where cards are drawn from a single deck
  - Code ace's value either 1 or 11 depending on when it is drawn
  - CSS color variables
  - Avatar picker for the player (based on Per's emoji fighter, with a dropdown menu)

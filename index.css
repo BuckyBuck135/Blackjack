@@ -139,7 +139,7 @@ margin-bottom: 20px;
   width: 80px;
   aspect-ratio: 5/7;
   border: 1px solid black;
-  border-radius: 5px
+  border-radius: 5px;
 }
 
 .card {
@@ -173,4 +173,19 @@ border: 1px solid goldenrod;
   background-color: grey;
   color: darkgrey;
   cursor: not-allowed;
+}
+
+.new-round-btn {
+  margin-bottom: 2em;
+}
+
+.hidden {
+visibility: hidden;
+}
+
+@media screen and (min-width: 375px) {
+  .container {
+    flex-direction: column;
+    gap: 1.5em
+  }
 }
