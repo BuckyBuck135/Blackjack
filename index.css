@@ -186,6 +186,26 @@ border: 1px solid goldenrod;
 visibility: hidden;
 }
 
+.grey-bg {
+  background-color: grey;
+  opacity: 0.5;
+}
+
+div#dealer-container .card-slot:nth-child(2) {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div#dealer-container .card-slot:nth-child(2)::after {
+display: block;
+position: absolute;
+content: attr(data-after);
+font-size: 2rem;
+}
+
+
 @media screen and (min-width: 1000px) {
   .container {
     flex-direction: row;

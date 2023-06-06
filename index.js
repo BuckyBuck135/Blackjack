@@ -89,38 +89,46 @@ function fetchCardsDealer() {
     fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
     .then(res =>res.json())
     .then(data => {
-            //push cards to array
-            for (let i=0; i<data.cards.length; i++) {
-                dealerCards.push(data.cards[i])
-            }
-                        
-            let cardValueIndex = valueOptions.indexOf(data.cards[0].value)
-            // check ACE - currently = 1
-            if (cardValueIndex == 12 ) {
-                    dealerSum += 1
-                
-            // check JACK QUEEN KING
-            } else if (cardValueIndex > 8 ) {
-                dealerSum += 10
+        //push cards to array
+        for (let i=0; i<data.cards.length; i++) {
+            dealerCards.push(data.cards[i])
+        }
+        let cardValueIndex = valueOptions.indexOf(data.cards[0].value)
 
-            // check 2 to 10
-            } else {
-                dealerSum += (cardValueIndex+2)
-            }
+        // // check ACE - currently = 1
+        if (cardValueIndex == 12 ) {
+                dealerSum += 1
+            
+        // check JACK QUEEN KING
+        } else if (cardValueIndex > 8 ) {
+            dealerSum += 10
 
-            setTimeout(() => {
-                dealerSumEl.textContent = "Sum: " + dealerSum;
-                }, 500)
+        // check 2 to 10
+        } else {
+            dealerSum += (cardValueIndex+2)
+        }
 
-            for (let i = 0; i<dealerCards.length; i++) {
-                dealerContainer.children[i].innerHTML = 
-                `
-                    <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
-                `
-            }   
+        setTimeout(() => {
+            dealerSumEl.textContent = "Sum: " + dealerSum;
+            }, 500)
+        
+        // reveals 1st card
+        dealerContainer.children[0].innerHTML = 
+        `
+            <img src=${dealerCards[0].image} class="card dealer-card" alt="A random playing card." crossorigin="anonymous">
+        `
+        //hides remaining cards
+        for (let i = 1; i<dealerCards.length; i++) {
+            dealerContainer.children[i].innerHTML = 
+            `
+                <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
+            `
+        }   
+        document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.add("grey-bg")
+        document.querySelector("div#dealer-container .card-slot:nth-child(2)").setAttribute("data-after", "?")
     }) 
     .then(function() {
-        if(dealerSum < 16) fetchCardsDealer()
+        if(dealerSum < 17) fetchCardsDealer()
     })
 }
 
@@ -233,6 +241,10 @@ function revealDealerCards() {
         element.classList.remove("hidden")
     };
     dealerSumEl.style.visibility = "visible";
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.remove("grey-bg")
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").removeAttribute("data-after")
+
+
 }
 function resetBoardforNewRound() {
     getNewDeck()
@@ -279,3 +291,14 @@ function enable(button) {
 newRoundBtn.addEventListener("click", newRound)
 hitBtn.addEventListener("click", hit)
 stayBtn.addEventListener("click", stay)
+
+
+/// TESTS
+function hasAceInHand(hand) {
+    for (let card of hand) {
+        if (card.value === "ACE") {
+            return true
+        }
+        else return false
+    }
+  }
