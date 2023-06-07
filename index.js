@@ -75,12 +75,18 @@ function drawCards(number) {
             playerCards.push(data.cards[i])
         }
 
-        //disable "HIT" button at 5 cards
+        //disable "HIT" button at 5 cards -- currently not working as intended: doesnt render 5th card and score
         if(playerCards.length === 5) {
             disable(hitBtn)
+            handlePlayerSum()
+            renderPlayerCards()
+
+            // return
+        } else {
+            handlePlayerSum()
+            renderPlayerCards()
         }
-        handlePlayerSum()
-        renderPlayerCards()
+
     })
 }
 
@@ -95,9 +101,9 @@ function fetchCardsDealer() {
         }
         let cardValueIndex = valueOptions.indexOf(data.cards[0].value)
 
-        // // check ACE - currently = 1
+        // // check ACE - currently = 11
         if (cardValueIndex == 12 ) {
-                dealerSum += 1
+                dealerSum += 11
             
         // check JACK QUEEN KING
         } else if (cardValueIndex > 8 ) {
@@ -108,37 +114,30 @@ function fetchCardsDealer() {
             dealerSum += (cardValueIndex+2)
         }
 
-        setTimeout(() => {
-            dealerSumEl.textContent = "Sum: " + dealerSum;
-            }, 500)
+         dealerSumEl.textContent = "Sum: " + dealerSum;
         
-        // reveals 1st card
-        dealerContainer.children[0].innerHTML = 
-        `
-            <img src=${dealerCards[0].image} class="card dealer-card" alt="A random playing card." crossorigin="anonymous">
-        `
-        //hides remaining cards
-        for (let i = 1; i<dealerCards.length; i++) {
-            dealerContainer.children[i].innerHTML = 
-            `
-                <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
-            `
-        }   
-        document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.add("grey-bg")
-        document.querySelector("div#dealer-container .card-slot:nth-child(2)").setAttribute("data-after", "?")
+        renderDealerCards()
     }) 
     .then(function() {
         if(dealerSum < 17) fetchCardsDealer()
+        if (dealerSum > 21 && hasAceInHand(dealerCards)) {
+            dealerSum -= 10
+            dealerSumEl.textContent = "Sum: " + dealerSum
+            fetchCardsDealer()
+        }
     })
 }
+
+
+
 
 function getPlayerSum() {
     let playerSum = 0; 
     for(let i =0; i<playerCards.length; i++) {
         let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
-        // check ACE - currently = 1
+        // check ACE - currently 1
         if (cardValueIndex == 12 ) {
-                playerSum += 1
+                playerSum += 11
             
         // check JACK QUEEN KING
         } else if (cardValueIndex > 8 ) {
@@ -152,34 +151,90 @@ function getPlayerSum() {
     return playerSum
 }
 
-function handlePlayerSum() {
-    const playerSum = getPlayerSum()
-    playerSumEl.textContent = "Sum: " + playerSum
 
-    if (playerSum > 21) {
-        message = "Bust..."
-        revealDealerCards()
-        enable(newRoundBtn)
-        disable(hitBtn) 
-        disable(stayBtn) 
-    } else if (playerSum <= 20) {
+function handlePlayerSum() {
+
+    let playerSum = getPlayerSum()
+    playerSumEl.textContent = "Sum: " + playerSum
+    if (playerSum > 21 && hasAceInHand(playerCards)) {
+        playerSum -= 10
         message = "Draw a card?";
-    } else if (playerSum === 21) {
-        message = "Blackjack! Double money!";
-        h1El.classList.add("blackjack-text-effect");
-        revealDealerCards()
-        enable(newRoundBtn)
-        disable(hitBtn) 
-        disable(stayBtn) 
-    } else if (playerCards.length == 5 && playerSum <21) {
-        message = "You win! Double money!";
-    } else if (playerCards.length == 5 && playerSum === 21) {
-        message = "You win! Triple money!";
+        playerSumEl.textContent = "Sum: " + playerSum
     }
 
-    // handle length = 5 && playerSum < 21
-    messageEl.textContent = message;
+    if (playerCards.length === 5 && playerSum === 21) {
+        message = "You win! Triple money!";
+        revealDealerCards()
+    }
 
+    if (playerCards.length === 5 && playerSum <21) {
+        message = "You win! Double money!";
+        revealDealerCards()
+    }
+
+    if (playerSum === 21 && !(dealerSum === 21)) {
+        message = "Blackjack! Double money!";
+        h1El.classList.add("blackjack-text-effect");
+        revealDealerCards() 
+    } 
+
+    if (playerSum > 21 && dealerSum < 21) {
+        message = "You lose..."
+        revealDealerCards() 
+    }
+    
+    if (playerSum <= 20) {
+        message = "Draw a card?";
+    }
+    
+    messageEl.textContent = message;
+}
+
+function compareSums() {
+    let playerSum = getPlayerSum()
+    if (playerSum > 21 && hasAceInHand(playerCards)) {
+        playerSum -= 10
+        playerSumEl.textContent = "Sum: " + playerSum
+    }
+
+    if (dealerSum > 21 && hasAceInHand(dealerCards)) {
+        dealerSum -= 10
+        dealerSumEl.textContent = "Sum: " + dealerSum
+    }
+
+    else if (dealerCards.length === 5 && dealerSum === 21) {
+        message = "Dealer has Blackjack...You lose triple money!"
+    }
+
+    else if (dealerCards.length === 5 && dealerSum < 21) {
+        message = "You lose double money!"
+    }
+
+    else if (!(playerSum === 21) && dealerSum === 21) {
+        message = "Dealer has Blackjack...You lose double money!"
+    }
+
+    else if (playerSum > 21 && dealerSum < 21) {
+        message = "You lose..."
+    }
+    
+    else if (playerSum < 21 && dealerSum > 21) {
+        message = "You win!"
+    }
+    
+    else if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
+        message = "You win!"
+    }
+    
+    else if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
+        message = "You lose..."
+    }
+
+    
+    else if (playerSum === dealerSum) { 
+        message = "Draw!"
+    }
+    messageEl.textContent = message;
 }
 
 function renderPlayerCards() {
@@ -190,6 +245,22 @@ function renderPlayerCards() {
     }
 }
 
+function renderDealerCards() {
+    // reveals 1st card
+    dealerContainer.children[0].innerHTML = 
+    `
+        <img src=${dealerCards[0].image} class="card dealer-card" alt="A random playing card." crossorigin="anonymous">
+    `
+    //hides remaining cards
+    for (let i = 1; i<dealerCards.length; i++) {
+        dealerContainer.children[i].innerHTML = 
+        `
+            <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
+        `
+    }   
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.add("grey-bg")
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").setAttribute("data-after", "?")
+}
     
 function newRound() {
     resetBoardforNewRound()
@@ -210,31 +281,7 @@ function stay() {
     compareSums()
     revealDealerCards()
 }   
-
-
-function compareSums() {
-    const playerSum = getPlayerSum()
-    if (playerSum > 21) {
-        message = "Bust..."
-    } else if (dealerSum > 21) {
-        message = "You win!"
-    } else if (playerSum > dealerSum) {
-        message = "You win!"
-    } else if (playerSum < dealerSum) {
-        // isAlive === false
-        message = "You lose..."
-    } else if (dealerSum === 21) {
-        message = "Dealer has Blackjack...You lose double money!"
-    } else if (dealerCards.length === 5 && dealerSum < 21) {
-        message = "Dealer has Blackjack...You lose double money!"
-    } else if (dealerCards.length === 5 && dealerSum === 21) {
-        message = "Dealer has Blackjack...You lose triple money!"
-    } else {
-        message = "Draw!"
-    }
-    messageEl.textContent = message;
-}
-   
+  
 function revealDealerCards() {
     const dealerCardSlots = Array.from(document.querySelectorAll(".dealer-card"))
     for (let element of dealerCardSlots) {
@@ -243,14 +290,13 @@ function revealDealerCards() {
     dealerSumEl.style.visibility = "visible";
     document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.remove("grey-bg")
     document.querySelector("div#dealer-container .card-slot:nth-child(2)").removeAttribute("data-after")
-
-
+    enable(newRoundBtn)
+    disable(hitBtn) 
+    disable(stayBtn)
 }
+
 function resetBoardforNewRound() {
     getNewDeck()
-
-    isAlive = true;
-    hasBlackjack = false;
     dealerSum = 0;
     message = "";
     disable(newRoundBtn)
@@ -295,10 +341,6 @@ stayBtn.addEventListener("click", stay)
 
 /// TESTS
 function hasAceInHand(hand) {
-    for (let card of hand) {
-        if (card.value === "ACE") {
-            return true
-        }
-        else return false
-    }
+    return hand.some(card => card.value === "ACE")
   }
+
