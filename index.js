@@ -56,12 +56,16 @@ dealerSumEl.style.visibility = "hidden";
     // newRound()
 getNewDeck()
 
-function getNewDeck() {
-    fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
-        .then(res => res.json())
-        .then(data => {
-            deckId = data.deck_id
-        })
+async function getNewDeck() {
+    try {
+        let res = await fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
+        let data = await res.json()
+        deckId = data.deck_id
+        // return deckId
+    }
+    catch(err) {
+        console.log(err)
+    }
 }
 
 // draws cards for Player
@@ -129,31 +133,7 @@ function fetchCardsDealer() {
 }
 
 
-
-
-function getPlayerSum() {
-    let playerSum = 0; 
-    for(let i =0; i<playerCards.length; i++) {
-        let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
-        // check ACE - currently 1
-        if (cardValueIndex == 12 ) {
-                playerSum += 11
-            
-        // check JACK QUEEN KING
-        } else if (cardValueIndex > 8 ) {
-            playerSum += 10
-
-        // check 2 to 10
-        } else {
-            playerSum += (cardValueIndex+2)
-        }
-    }
-    return playerSum
-}
-
-
 function handlePlayerSum() {
-
     let playerSum = getPlayerSum()
     playerSumEl.textContent = "Sum: " + playerSum
     if (playerSum > 21 && hasAceInHand(playerCards)) {
@@ -182,6 +162,11 @@ function handlePlayerSum() {
         message = "You lose..."
         revealDealerCards() 
     }
+    // if (playerSum > 21) {
+    //     message = "Checking..."
+    //     compareSums()
+    //     revealDealerCards() 
+    // }
     
     if (playerSum <= 20) {
         message = "Draw a card?";
@@ -202,39 +187,58 @@ function compareSums() {
         dealerSumEl.textContent = "Sum: " + dealerSum
     }
 
-    else if (dealerCards.length === 5 && dealerSum === 21) {
+    if (dealerCards.length === 5 && dealerSum === 21) {
         message = "Dealer has Blackjack...You lose triple money!"
     }
 
-    else if (dealerCards.length === 5 && dealerSum < 21) {
+    if (dealerCards.length === 5 && dealerSum < 21) {
         message = "You lose double money!"
     }
 
-    else if (!(playerSum === 21) && dealerSum === 21) {
+    if (!(playerSum === 21) && dealerSum === 21) {
         message = "Dealer has Blackjack...You lose double money!"
     }
 
-    else if (playerSum > 21 && dealerSum < 21) {
+    if (playerSum > 21 && dealerSum < 21) {
         message = "You lose..."
     }
     
-    else if (playerSum < 21 && dealerSum > 21) {
+    if (playerSum < 21 && dealerSum > 21) {
         message = "You win!"
     }
     
-    else if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
+    if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
         message = "You win!"
     }
     
-    else if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
+    if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
         message = "You lose..."
     }
 
-    
-    else if (playerSum === dealerSum) { 
+    if (playerSum === dealerSum) { 
         message = "Draw!"
     }
     messageEl.textContent = message;
+}
+
+function getPlayerSum() {
+    let playerSum = 0; 
+    for(let i =0; i<playerCards.length; i++) {
+        let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
+        // check ACE - currently 1
+        if (cardValueIndex == 12 ) {
+                playerSum += 11
+            
+        // check JACK QUEEN KING
+        } else if (cardValueIndex > 8 ) {
+            playerSum += 10
+
+        // check 2 to 10
+        } else {
+            playerSum += (cardValueIndex+2)
+        }
+    }
+    return playerSum
 }
 
 function renderPlayerCards() {
@@ -264,8 +268,8 @@ function renderDealerCards() {
     
 function newRound() {
     resetBoardforNewRound()
-    drawCards(2)
     fetchCardsDealer()
+    drawCards(2)
 }
 
 function hit() {
