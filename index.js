@@ -5,7 +5,8 @@ let playerCards = [];
 let dealerCards = [];
 
 let hasBlackjack = false;
-let dealerSum = 0;
+// let playerSum = 0;
+// let dealerSum = 0;
 let message = "";
 let deckId = "";
 
@@ -55,82 +56,69 @@ dealerSumEl.style.visibility = "hidden";
 
     // newRound()
 getNewDeck()
-
-async function getNewDeck() {
-    try {
-        let res = await fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
-        let data = await res.json()
-        deckId = data.deck_id
-        // return deckId
-    }
-    catch(err) {
-        console.log(err)
-    }
-}
-
 // draws cards for Player
-function drawCards(number) {
-    fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=${number}`)
-        .then(res =>res.json())
-        .then(data => {
+// function drawCards(number) {
+//     fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=${number}`)
+//         .then(res =>res.json())
+//         .then(data => {
 
-        //push cards to array
-        for (let i=0; i<data.cards.length; i++) {
-            playerCards.push(data.cards[i])
-        }
+//         //push cards to array
+//         for (let i=0; i<data.cards.length; i++) {
+//             playerCards.push(data.cards[i])
+//         }
 
-        //disable "HIT" button at 5 cards -- currently not working as intended: doesnt render 5th card and score
-        if(playerCards.length === 5) {
-            disable(hitBtn)
-            handlePlayerSum()
-            renderPlayerCards()
+//         //disable "HIT" button at 5 cards -- currently not working as intended: doesnt render 5th card and score
+//         if(playerCards.length === 5) {
+//             disable(hitBtn)
+//             handlePlayerSum()
+//             renderPlayerCards()
 
-            // return
-        } else {
-            handlePlayerSum()
-            renderPlayerCards()
-        }
+//             // return
+//         } else {
+//             handlePlayerSum()
+//             renderPlayerCards()
+//         }
 
-    })
-}
+//     })
+// }
 
 
-function fetchCardsDealer() {
-    fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
-    .then(res =>res.json())
-    .then(data => {
-        //push cards to array
-        for (let i=0; i<data.cards.length; i++) {
-            dealerCards.push(data.cards[i])
-        }
-        let cardValueIndex = valueOptions.indexOf(data.cards[0].value)
+// function fetchCardsDealer() {
+//     fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
+//     .then(res =>res.json())
+//     .then(data => {
+//         //push cards to array
+//         for (let i=0; i<data.cards.length; i++) {
+//             dealerCards.push(data.cards[i])
+//         }
+//         let cardValueIndex = valueOptions.indexOf(data.cards[0].value)
 
-        // // check ACE - currently = 11
-        if (cardValueIndex == 12 ) {
-                dealerSum += 11
+//         // // check ACE - currently = 11
+//         if (cardValueIndex == 12 ) {
+//                 dealerSum += 11
             
-        // check JACK QUEEN KING
-        } else if (cardValueIndex > 8 ) {
-            dealerSum += 10
+//         // check JACK QUEEN KING
+//         } else if (cardValueIndex > 8 ) {
+//             dealerSum += 10
 
-        // check 2 to 10
-        } else {
-            dealerSum += (cardValueIndex+2)
-        }
+//         // check 2 to 10
+//         } else {
+//             dealerSum += (cardValueIndex+2)
+//         }
 
-         dealerSumEl.textContent = "Sum: " + dealerSum;
+//          dealerSumEl.textContent = "Sum: " + dealerSum;
         
-        renderDealerCards()
-    }) 
-    .then(function() {
-        if(dealerSum < 17) fetchCardsDealer()
-        if (dealerSum > 21 && hasAceInHand(dealerCards)) {
-            dealerSum -= 10
-            dealerSumEl.textContent = "Sum: " + dealerSum
-            fetchCardsDealer()
-        }
-    })
-}
+//         renderDealerCards()
+//     }) 
+//     .then(function() {
+//         if(dealerSum < 17) fetchCardsDealer()
+//         if (dealerSum > 21 && hasAceInHand(dealerCards)) {
+//             dealerSum -= 10
+//             dealerSumEl.textContent = "Sum: " + dealerSum
+//             fetchCardsDealer()
+//         }
+//     })
+// }
 
 
 function handlePlayerSum() {
@@ -221,13 +209,33 @@ function compareSums() {
     messageEl.textContent = message;
 }
 
+// function getPlayerSum() {
+//     let playerSum = 0; 
+//     for(let i =0; i<playerCards.length; i++) {
+//         let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
+//         // check ACE - currently 1
+//         if (cardValueIndex == 12 ) {
+//                 playerSum += 11
+            
+//         // check JACK QUEEN KING
+//         } else if (cardValueIndex > 8 ) {
+//             playerSum += 10
+
+//         // check 2 to 10
+//         } else {
+//             playerSum += (cardValueIndex+2)
+//         }
+//     }
+//     return playerSum
+// }
+
 function getPlayerSum() {
-    let playerSum = 0; 
+    let playerSum = 0
     for(let i =0; i<playerCards.length; i++) {
         let cardValueIndex = valueOptions.indexOf(playerCards[i].value)
         // check ACE - currently 1
         if (cardValueIndex == 12 ) {
-                playerSum += 11
+            playerSum += 11
             
         // check JACK QUEEN KING
         } else if (cardValueIndex > 8 ) {
@@ -238,60 +246,96 @@ function getPlayerSum() {
             playerSum += (cardValueIndex+2)
         }
     }
+    playerSumEl.textContent = "Sum: " + playerSum
     return playerSum
 }
 
-function renderPlayerCards() {
-    for (let i = 0; i<playerCards.length; i++) {
-        playerContainer.children[i].innerHTML = `
-    <img src=${playerCards[i].image} class="card" alt="A random playing card." crossorigin="anonymous">
-        `
+function getDealerSum() {
+    let dealerSum = 0
+    for(let i =0; i<dealerCards.length; i++) {
+        let cardValueIndex = valueOptions.indexOf(dealerCards[i].value)
+        // check ACE - currently 1
+        if (cardValueIndex == 12 ) {
+            dealerSum += 11
+            
+        // check JACK QUEEN KING
+        } else if (cardValueIndex > 8 ) {
+            dealerSum += 10
+
+        // check 2 to 10
+        } else {
+            dealerSum += (cardValueIndex+2)
+        }
     }
+    return dealerSum
 }
 
-function renderDealerCards() {
-    // reveals 1st card
-    dealerContainer.children[0].innerHTML = 
-    `
-        <img src=${dealerCards[0].image} class="card dealer-card" alt="A random playing card." crossorigin="anonymous">
-    `
-    //hides remaining cards
-    for (let i = 1; i<dealerCards.length; i++) {
-        dealerContainer.children[i].innerHTML = 
-        `
-            <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
-        `
-    }   
-    document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.add("grey-bg")
-    document.querySelector("div#dealer-container .card-slot:nth-child(2)").setAttribute("data-after", "?")
-}
-    
-function newRound() {
+
+async function newRound() {
     resetBoardforNewRound()
-    fetchCardsDealer()
-    drawCards(2)
+    // fetchCardsDealer()
+    // drawCards(2)
+    playerCards.push(await dealCard())
+    dealerCards.push(await dealCard())
+    playerCards.push(await dealCard())
+    dealerCards.push(await dealCard())
+    renderPlayerCards()
+    renderDealerCards()
+    getPlayerSum()
+    getDealerSum()
+
 }
 
-function hit() {
-    if(playerCards.length < 5) {
-        drawCards(1)
-    } 
-}
+// function hit() {
+//     if(playerCards.length < 5) {
+//         drawCards(1)
+//     } 
+// }
 
-function stay() {
-    enable(newRoundBtn)
-    disable(hitBtn) 
-    disable(stayBtn) 
-    compareSums()
-    revealDealerCards()
-}   
+
+async function hit() {
+        if(playerCards.length < 5) {
+            playerCards.push(await dealCard())
+        } 
+        getPlayerSum()
+        renderPlayerCards()
+    }
+
+async function stay() {
+    // enable(newRoundBtn)
+    // disable(hitBtn) 
+    // disable(stayBtn) 
+    // compareSums()
+    // revealDealerCards()
+
+    let dealerSum = getDealerSum()
+    //To hit the Dealer till he's over 17 or over
+    while(dealerSum < 17) {
+        dealerCards.push(await dealCard())
+        dealerSum = getDealerSum()
+    }
+
+    // if (dealerSum > 21 && hasAceInHand(dealerCards)) {
+    //     dealerSum -= 10
+    //     dealerSumEl.textContent = "Sum: " + dealerSum
+    //     fetchCardsDealer()
+    // }
+
+    getDealerSum();
+    revealDealerCards();
+  }
+ 
   
 function revealDealerCards() {
+    renderDealerCards()
+    let dealerSum = getDealerSum()
+    dealerSumEl.textContent = "Sum: " + dealerSum
+    dealerSumEl.style.visibility = "visible";
+
     const dealerCardSlots = Array.from(document.querySelectorAll(".dealer-card"))
     for (let element of dealerCardSlots) {
         element.classList.remove("hidden")
     };
-    dealerSumEl.style.visibility = "visible";
     document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.remove("grey-bg")
     document.querySelector("div#dealer-container .card-slot:nth-child(2)").removeAttribute("data-after")
     enable(newRoundBtn)
@@ -320,6 +364,58 @@ function resetBoardforNewRound() {
     dealerCards = [];
 }
 
+
+
+function renderPlayerCards() {
+    for (let i = 0; i<playerCards.length; i++) {
+        playerContainer.children[i].innerHTML = `
+    <img src=${playerCards[i].image} class="card" alt="A random playing card." crossorigin="anonymous">
+        `
+    }
+}
+
+function renderDealerCards() {
+    // reveals 1st card
+    dealerContainer.children[0].innerHTML = 
+    `
+        <img src=${dealerCards[0].image} class="card dealer-card" alt="A random playing card." crossorigin="anonymous">
+    `
+    //hides remaining cards
+    for (let i = 1; i<dealerCards.length; i++) {
+        dealerContainer.children[i].innerHTML = 
+        `
+            <img src=${dealerCards[i].image} class="card dealer-card hidden" alt="A random playing card." crossorigin="anonymous">
+        `
+    }   
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.add("grey-bg")
+    document.querySelector("div#dealer-container .card-slot:nth-child(2)").setAttribute("data-after", "?")
+}
+
+
+async function getNewDeck() {
+    try {
+        let res = await fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
+        let data = await res.json()
+        deckId = data.deck_id
+        // return deckId
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+async function dealCard() {
+    try {
+        let res = await fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
+        let data = await res.json()
+        return data.cards[0]
+    }
+    catch(err) {
+        console.log(err)
+    }
+}
+
+
 function disable(button) {
     button.disabled = true
     button.classList.add("disabled")
@@ -329,6 +425,11 @@ function enable(button) {
     button.disabled = false
     button.classList.remove("disabled")
 }
+
+function hasAceInHand(hand) {
+    return hand.some(card => card.value === "ACE")
+}
+
 // function reloadGame() {
 //     location.reload();
 // }
@@ -343,8 +444,5 @@ hitBtn.addEventListener("click", hit)
 stayBtn.addEventListener("click", stay)
 
 
-/// TESTS
-function hasAceInHand(hand) {
-    return hand.some(card => card.value === "ACE")
-  }
+
 
