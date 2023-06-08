@@ -9,6 +9,9 @@ let hasBlackjack = false;
 // let dealerSum = 0;
 let deckId = "";
 
+// let chips = getChipsValue()
+
+
 const messageEl = document.getElementById("message-el");
 let message = ""
 
@@ -60,56 +63,66 @@ getNewDeck()
 function compareSums() {
     let playerSum = getPlayerSum()
     let dealerSum = getDealerSum()
-
+    // let chips = getChipsValue()
+    const bet = 10
    //house rules
    if ((playerCards.length === 5 && playerSum === 21) && !(dealerSum === 21)) {
     message = "Blackjack! You win triple money!"
-}
+    chips += bet * 3
+    }
 
-    if ((playerCards.length === 5 && playerSum < 21) && playerSum > dealerSum) {
+    else if ((playerCards.length === 5 && playerSum < 21) && playerSum > dealerSum) {
         message = "You win double money!"
+        chips += bet * 2
     }
 
-    if (dealerCards.length === 5 && dealerSum === 21) {
+    else if (dealerCards.length === 5 && dealerSum === 21) {
         message = "Dealer has Blackjack...You lose triple money!"
+        chips -= bet * 3
     }
 
-    if (dealerCards.length === 5 && dealerSum < 21) {
+    else if (dealerCards.length === 5 && dealerSum < 21) {
         message = "You lose double money!"
+        chips -= bet * 2
     }
 
     //casino rules
-    if (playerSum === 21 && !(dealerSum === 21)) {
+    else if (playerSum === 21 && !(dealerSum === 21)) {
         message = "Blackjack! Double money!";
         h1El.classList.add("blackjack-text-effect");
+        chips += bet * 2
     }
 
-    if (!(playerSum === 21) && dealerSum === 21) {
+    else if (!(playerSum === 21) && dealerSum === 21) {
         message = "Dealer has Blackjack...You lose double money!"
+        chips -= bet * 2
     }
 
-    if (playerSum > 21 && dealerSum < 21) {
+    else if (playerSum > 21 && dealerSum < 21) {
         message = "You lose..."
+        chips -= bet 
     }
     
-    if (playerSum < 21 && dealerSum > 21) {
+    else if (playerSum < 21 && dealerSum > 21) {
         message = "You win!"
+        chips += bet
     }
     
-    if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
+    else if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
         message = "You win!"
+        chips += bet
     }
     
-    if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
+    else if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
         message = "You lose..."
+        chips -= bet
     }
 
     if (playerSum === dealerSum || (playerSum > 21 && dealerSum > 21)) { 
         message = "Draw!"
     }
     messageEl.textContent = message;
-
- 
+    document.getElementById("chips-display").textContent = `$${chips}`
 }
 
 
@@ -159,7 +172,6 @@ function getDealerSum() {
     if (dealerSum > 21 && hasAceInHand(dealerCards)) {
         dealerSum -= 10
     }
-    // console.log(dealerSum)
     return dealerSum
 }
 
@@ -321,3 +333,29 @@ function hasAceInHand(hand) {
 newRoundBtn.addEventListener("click", newRound)
 hitBtn.addEventListener("click", hit)
 standBtn.addEventListener("click", stand)
+
+
+///////////////
+//// MODAL ////
+///////////////
+
+const chipsInput = document.getElementById("chips-input")
+// const chipsValue = Number(chipsInput.value)
+const submitBtn = document.getElementById("submit-btn")
+// let chips = getChipsValue()
+let chips = 0
+submitBtn.addEventListener("click", handleChips)
+
+function handleChips() {
+    getChipsValue()
+    renderChips()
+    // chipsInput.value = ""
+}
+
+function getChipsValue() {
+    chips = Number(chipsInput.value)
+}
+
+function renderChips() {
+    document.getElementById("chips-display").textContent = `$${chipsInput.value}`
+}

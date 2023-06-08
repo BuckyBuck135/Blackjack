@@ -19,15 +19,17 @@
                     <label for="chips-input">Chips</label>
                     <input id="chips-input" type="number" placeholder="How much cash you got?">
                 </fieldset>
-                <div><button id="submit-btn">SUBMIT</button></div>
+                <button id="submit-btn">SUBMIT</button>
             </form>
         </div> -->
 
         <main>
             <h1 id="h1-el">Blackjack</h1>
+            <input id="chips-input" type="number" placeholder="How much cash you got?">
+            <button id="submit-btn">SUBMIT</button>
             <div class="container">
                 <div>
-                    <h2 id="player-el">Player ($XXX)</h2>
+                    <h2 id="player-el">Player <span id="chips-display"></span></h2>
                     <div id="player-container" class="cards-container">
                         <div class="card-slot"></div>
                         <div class="card-slot"></div>
