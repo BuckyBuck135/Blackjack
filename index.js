@@ -254,7 +254,7 @@ function getDealerSum() {
     let dealerSum = 0
     for(let i =0; i<dealerCards.length; i++) {
         let cardValueIndex = valueOptions.indexOf(dealerCards[i].value)
-        // check ACE - currently 1
+        // check ACE - default 11
         if (cardValueIndex == 12 ) {
             dealerSum += 11
             
@@ -266,6 +266,10 @@ function getDealerSum() {
         } else {
             dealerSum += (cardValueIndex+2)
         }
+    }
+    // when hand is calculated, check ACE again - turn into 1 if sum is over 21
+    if (dealerSum > 21 && hasAceInHand(dealerCards)) {
+        dealerSum -= 10
     }
     return dealerSum
 }
@@ -285,13 +289,6 @@ async function newRound() {
     getDealerSum()
 
 }
-
-// function hit() {
-//     if(playerCards.length < 5) {
-//         drawCards(1)
-//     } 
-// }
-
 
 async function hit() {
         if(playerCards.length < 5) {
@@ -321,7 +318,6 @@ async function stay() {
     //     fetchCardsDealer()
     // }
 
-    getDealerSum();
     revealDealerCards();
   }
  
@@ -345,14 +341,12 @@ function revealDealerCards() {
 
 function resetBoardforNewRound() {
     getNewDeck()
-    dealerSum = 0;
-    message = "";
     disable(newRoundBtn)
     enable(hitBtn)
     enable(stayBtn)
     h1El.classList.remove("blackjack-text-effect");
     dealerSumEl.style.visibility = "hidden";
-
+    message = "";
     for (let i = 0; i<playerCards.length; i++) {
         playerContainer.children[i].innerHTML = ""
     }
@@ -363,8 +357,6 @@ function resetBoardforNewRound() {
     playerCards = [];
     dealerCards = [];
 }
-
-
 
 function renderPlayerCards() {
     for (let i = 0; i<playerCards.length; i++) {
