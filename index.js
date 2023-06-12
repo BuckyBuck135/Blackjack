@@ -1,16 +1,14 @@
 import {getNewDeck, dealCard } from "./api.js"
-// CONSTANTS //
 
+// CONSTANTS //
 const deckId = await getNewDeck();
 const bet = 10
 
 const messageEl = document.getElementById("message-el");
-
 const playerContainer = document.getElementById("player-container");
 const dealerContainer = document.getElementById("dealer-container");
 const playerSumEl = document.getElementById("player-sum-el");
 const dealerSumEl = document.getElementById("dealer-sum-el");
-
 const h1El = document.getElementById("h1-el");
 const newRoundBtn = document.getElementById("new-round-btn")
 const hitBtn = document.getElementById("hit-btn");
@@ -76,7 +74,6 @@ function compareSums() {
 
     else if (playerSum > 21 && dealerSum < 21) {
         message = "You lose..."
-        // chips -= bet 
         revealEarnings("lose", bet)
     }
     
@@ -94,7 +91,6 @@ function compareSums() {
     
     else if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
         message = "You lose..."
-        // chips -= bet
         revealEarnings("lose", bet)
     }
 
@@ -106,8 +102,6 @@ function compareSums() {
     messageEl.textContent = message;
     document.getElementById("chips-display").textContent = `$${chips}`
 }
-
-
 
 function getPlayerSum() {
     let playerSum = 0
@@ -156,7 +150,6 @@ function getDealerSum() {
     }
     return dealerSum
 }
-
 
 async function newRound() {
     await resetBoardforNewRound()
@@ -321,13 +314,7 @@ function hasAceInHand(hand) {
     return hand.some(card => card.value === "ACE")
 }
 
-// function reloadGame() {
-//     location.reload();
-// }
-
-
-
-// Event listeners //
+//// EVENT LISTENERS ////
 newRoundBtn.addEventListener("click", newRound)
 hitBtn.addEventListener("click", hit)
 standBtn.addEventListener("click", stand)
