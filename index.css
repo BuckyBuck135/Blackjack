@@ -1,136 +1,198 @@
+@font-face {
+  font-family: casino;
+  src: url(./fonts/casino.ttf);
+}
 
 *, *:before, *:after {
   box-sizing: border-box;
 }
 
 body {
-  background-image: url("images/table.png");
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  /* font-size: 1.3em; */
+  background-image: url(images/table.png);
+  background-size: cover;
+  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-  color: white;
+  color: whitesmoke;
   text-align: center;
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 main, .splash {
-width: 100%;
-max-width: 650px;
- margin: 0 auto;
-padding: 0 10px; 
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 0 10px; 
 }
 
 /* ----SPLASH PAGE ----*/
+
+/* The Modal (background) */
+.modal {
+  display: flex; 
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  backdrop-filter: blur(10px);;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: rgba(37, 57, 6, 0.768);
+  background-image: url(images/table.png);
+  background-size: cover;
+  padding: 2em;
+  border: 4px solid goldenrod;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px black;
+  width: 80%; /* Could be more or less, depending on screen size */
+  position: relative;
+}
+
 form {
-display: flex;
-flex-direction: column;
-justify-content: space-around; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; 
+  align-items: center;
+}
+
+.king-img {
+  position: absolute;
+  z-index: -10;
+  transform: rotate(335deg);
+  width: 75px;
+  top: -80px;
+  left: -20px;
+  filter: grayscale(0.8);
+  border-radius: 5px;
+}
+
+.king-img, .bubble-wrapper, input, #submit-btn {
+  transition: all 0.3s;
+}
+
+.bubble-wrapper {
+  opacity: 0;
+}
+
+.bubble {
+  position: absolute;
+  top: -132px;
+  left: -20px;
+  background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/electric.svg);
+  width: 230px;
+  font-size: 1rem;
+  color: black;
+  font-style: italic;
+  transform: rotateY(180deg);
+  height: 100px; 
+}
+
+.bubble-text {
+  font-family: 'casino';
+  position: absolute;
+  top: -81px;
+  font-size: 1.4rem;
+  color: black;
+  left: 100px;
+}
+
+form h1 {
+  font-size: 2rem;
 }
 
 input {
-display: block;
-min-width: 20em;
-margin: 0.5em auto 1em auto;
-border: none;
-padding: 10px;
+  display: block;
+  margin: 0.5em auto 1em auto;
+  border: none;
+  padding: 10px;
+}
+
+input::placeholder {
+  opacity: 0.7;
+}
+
+input,
+input::placeholder {
+  font-style: italic;
+  font-family: inherit;
 }
 
 legend {
-text-align: left;
+  text-align: left;
 }
 
 fieldset {
-border: 3px solid #016f32;
-border-radius: 2px;
-margin-bottom: 1em; 
-padding: 1em;
-box-shadow: 3px 0px 5px black, -3px 0px 5px black; 
+  font-family: inherit;
+  border: 3px solid #016f32;
+  border-radius: 2px;
+  margin-bottom: 1em; 
+  padding: 1em;
+  box-shadow: 3px 0px 5px black, -3px 0px 5px black; 
 }
+
+label {
+  font-family: inherit
+}
+
 
 /* ---- MAIN PAGE ---- */
 
 /* TYPOGRAPHY */
 h1 {
-color: goldenrod; 
-font-size: 3rem;
-padding: 0.2em;
-margin:0;
+  font-family: casino, sans-serif;
+  font-size: 3rem;
+  padding: 0.2em;
+  margin: 0.2em 0 0.5em 0;
+  background: -webkit-linear-gradient(goldenrod, firebrick);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 h2 {
   color: goldenrod;
   text-transform: uppercase;
-  margin-top: 1.2rem;
+  text-shadow: 2px 2px 2px black;
+
 }
 
-.message-el {
-font-style: italic;
-font-size: 1.5rem;
-margin: 0;
-}
-
-.sum-el {
-  font-size: 1.2rem;
-  margin: 0.5em;
-}
-
-.blackjack-text-effect {
---bg-size: 400%;
---color-one: orangered;
---color-two: goldenrod;
-background: linear-gradient(
-              90deg,
-              var(--color-one),
-              var(--color-two),
-              var(--color-one)
-            ) 0 0 / var(--bg-size) 100%;
-color: transparent;
-background-clip: text;
--webkit-background-clip: text; /*necessary in Chrome/Brave*/
-animation: move-bg 8s infinite linear;
-}
-
-/*comment out keyframe below to turn off the h1 animation*/
-@keyframes move-bg {
-to {
-  background-position: var(--bg-size) 0;
-}
-
-0% {
-  transform: scale(0.95);
-  box-shadow: 0 0 0 0 rgba(218, 165, 32, 0.7);
-}
-
-70% {
-  transform: scale(1);
-  box-shadow: 0 0 0 15px rgba(218, 165, 32, 0); /* 4th value is the spread */
-}
-
-100% {
-  transform: scale(0.95);
-  box-shadow: 0 0 0 0 rgba(218, 165, 32, 0);
-}
+h2, sum-el {
+  margin: 0.4em 0;
 }
 
 /* LAYOUT */
 
 .container {
-margin: auto;
-display: flex;
-gap: 1em;
-flex-direction: column;
-/* flex-wrap: wrap; */
-justify-content: space-around;
-align-items: center;
-max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 1200px;
+  min-height: 200px;
+}
+
+.player-info {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em
 }
 
 .btn-container {
-display: flex;
-justify-content: center;
-gap: 5px;
-flex-wrap: wrap;
-margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .cards-container {
@@ -150,26 +212,100 @@ margin-bottom: 20px;
   display: block;
 }
 
-/* BUTTONS */
-
-button {
-color: #016f32;
-width: 150px;
-background: goldenrod;
-padding: 1em 0.5em;
-font-weight: bold;
-border:1px solid #016f32;
-border-radius: 2px;
-margin-bottom: 5px;
-box-shadow: 3px 3px 5px black;
-cursor: pointer;
+.message-container {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  height: 100%;
+  margin: 0.5em 0;
+  position: relative;
 }
 
+.message-el {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  height: 50px;
+  width: 250px;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.bet-el {
+  position: absolute;
+  top: -30px;
+  right: -50px;
+  opacity: 0;
+  transition: all 0.5s;
+  text-shadow: 0 0 4px;
+  width: 70px;
+  z-index: 2;
+}
+
+.win-color {
+  color: goldenrod;
+}
+
+.lose-color {
+  color: firebrick;
+}
+
+.draw-color {
+  color: white
+}
+
+.sum-el {
+  font-size: 1.2rem;
+  margin: 0.5em;
+}
+
+.alert-btn {
+  background-color: firebrick;
+  color: white;
+}
+
+.alert-outline {
+  outline: 2px solid firebrick;
+}
+
+.alert-king {
+  transform: rotate(335deg) scale(1.2);
+  filter: grayscale(0);
+}
+
+
+
+/* BUTTONS */
+button {
+  /* font-family: casino, sans-serif; */
+  font-size: 1rem;
+  font-weight: 700;
+  color: #016f32;
+  width: 130px;
+  background: goldenrod;
+  padding: 0.75em 0.5em;
+  border: 1px solid #016f32;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  box-shadow: 3px 3px 5px black;
+  cursor: pointer;
+}
+
+form button {
+  margin: 0 auto;
+}
+
+.new-round-btn {
+  margin: 1em 0;
+}
+
+
 button:active {
-transform: translate(2px, 2px);
-color: goldenrod;
-background-color: #016f32;
-border: 1px solid goldenrod;
+  transform: translate(2px, 2px);
+  color: goldenrod;
+  background-color: #016f32;
+  border: 1px solid goldenrod;
 }
 
 .disabled {
@@ -178,12 +314,8 @@ border: 1px solid goldenrod;
   cursor: not-allowed;
 }
 
-.new-round-btn {
-  margin-bottom: 2em;
-}
-
 .hidden {
-visibility: hidden;
+  visibility: hidden;
 }
 
 .grey-bg {
@@ -206,9 +338,111 @@ font-size: 2rem;
 }
 
 
+/*Blackjack animation*/
+.blackjack-text-effect {
+  --bg-size: 400%;
+  --color-one: orangered;
+  --color-two: goldenrod;
+  background: linear-gradient(
+                90deg,
+                var(--color-one),
+                var(--color-two),
+                var(--color-one)
+              ) 0 0 / var(--bg-size) 100%;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text; /*necessary in Chrome/Brave*/
+  animation: move-bg 8s infinite linear;
+}
+  
+  @keyframes move-bg {
+  to {
+    background-position: var(--bg-size) 0;
+  }
+
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(218, 165, 32, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 15px rgba(218, 165, 32, 0); /* 4th value is the spread */
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(218, 165, 32, 0);
+  }
+}
+
 @media screen and (min-width: 1000px) {
+  .modal-content {
+    width: 50%
+  }
+
+  .king-img {
+    width: 130px;
+    top: -130px;
+    left: -45px;
+  }
+
+  .bubble {
+    top: -170px;
+    left: 0;
+    width: 350px;
+    height: 150px;
+  }
+
+  .bubble-text {
+    top: -100px;
+    font-size: 2rem;
+    left: 170px;
+  }
+
+  form h1 {
+    font-size: 2.5rem;
+    margin: 0.5em;
+  }
+
+  fieldset {
+    font-size: 1.3rem;
+  }
+
+  input {
+    font-size: inherit;
+    font-family: inherit;
+    width: 400px;
+  }
+
+  h1 {
+    font-size: 4rem;
+    margin-top: 1.5em;
+  }
+
   .container {
     flex-direction: row;
     gap: 2em
   }
+
+  .card-slot {
+    width: 90px
+  }
+
+  .message-container {
+    font-size: 1.5rem;
+  }
+
+  .bet-el {
+    right: -15px;
+    top: -90px;
+    font-size: 1.5rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 1em 0.5em;
+  }
 }
+
+

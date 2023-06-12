@@ -6,30 +6,45 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Blackjack</title>
         <link href="images/favicon.png" rel="icon" type="image/x-icon">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet">
         <link href="index.css" rel="stylesheet">
     </head>
     <body>
-        <!-- <div class="splash">
-            <form>
-                <h1>Blackjack</h1>
-                <fieldset>
-                    <legend>Player details</legend>
-                    <label for="name-input">Name</label>
-                    <input id="name-input" type="text" placeholder="Enter your name">
-                    <label for="chips-input">Chips</label>
-                    <input id="chips-input" type="number" placeholder="How much cash you got?">
-                </fieldset>
-                <button id="submit-btn">SUBMIT</button>
-            </form>
-        </div> -->
+        <!-- Modal -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <img src="./images/king.png" id="king-img" class="king-img"/>
+                <div id="bubble" class="bubble-wrapper">
+                    <blockquote class="bubble"></blockquote>
+                    <span id="bubble-text" class="bubble-text">YOUR NAME?</span>
+                    </div>
+                <div class="splash">
+                    <form>
+                        <h1>Blackjack</h1>
+                        <fieldset>
+                            <legend>Player details</legend>
+                            <label for="name-input">Name</label>
+                            <input id="name-input" type="text" placeholder="Enter your name" required>
+                            <label for="chips-input">Chips</label>
+                            <input id="chips-input" type="number" placeholder="How much cash you got?" required>
+                        </fieldset>
+                        <button id="submit-btn" type="submit">SUBMIT</button>
+                    </form>
+                </div>
+            </div>
+         </div>
 
+        <!-- Board -->
         <main>
             <h1 id="h1-el">Blackjack</h1>
-            <input id="chips-input" type="number" placeholder="How much cash you got?">
-            <button id="submit-btn">SUBMIT</button>
             <div class="container">
                 <div>
-                    <h2 id="player-el">Player <span id="chips-display"></span></h2>
+                    <div class="player-info">
+                        <h2 id="player-el">Player</h2>
+                        <h2 id="chips-display"></h2>
+                    </div>
                     <div id="player-container" class="cards-container">
                         <div class="card-slot"></div>
                         <div class="card-slot"></div>
@@ -37,9 +52,12 @@
                         <div class="card-slot"></div>
                         <div class="card-slot"></div>
                     </div>
-                    <p id="player-sum-el" class="sum-el">Sum:</p>
+                    <p id="player-sum-el" class="sum-el">Sum: ?</p>
                 </div>
-                <p id="message-el" class="message-el">Want to play a round?</p>
+                <div class="message-container">
+                    <p id="message-el" class="message-el">Want to play a round?</p>
+                    <p id="bet-el" class="bet-el">+ $10</p>
+                </div>
                 <div>
                     <h2>Dealer</h2>
                     <div id="dealer-container" class="cards-container">
@@ -49,7 +67,7 @@
                         <div class="card-slot"></div>
                         <div class="card-slot"></div>
                     </div>
-                    <p id="dealer-sum-el" class="sum-el">Sum:</p>
+                    <p id="dealer-sum-el" class="sum-el">Sum: ?</p>
                 </div>
             </div>
             <button id="new-round-btn" class="new-round-btn">NEW ROUND</button>
@@ -58,8 +76,7 @@
                 <button id="hit-btn">HIT</button>
                 <button id="stand-btn">STAND</button>
             </div>
-            <!-- <div><button onclick="reloadGame()">RELOAD</button></div> -->
         </main>
-        <script src="index.js"></script>
+        <script src="index.js" type="module"></script>
     </body>
 </html>

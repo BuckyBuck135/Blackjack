@@ -1,21 +1,10 @@
-
+import {getNewDeck, dealCard } from "./api.js"
 // CONSTANTS //
 
-let playerCards = [];
-let dealerCards = [];
-
-let hasBlackjack = false;
-// let playerSum = 0;
-// let dealerSum = 0;
-let deckId = "";
-
-// let chips = getChipsValue()
-
+const deckId = await getNewDeck();
+const bet = 10
 
 const messageEl = document.getElementById("message-el");
-let message = ""
-
-const playerEl = document.getElementById("player-el");
 
 const playerContainer = document.getElementById("player-container");
 const dealerContainer = document.getElementById("dealer-container");
@@ -23,103 +12,96 @@ const playerSumEl = document.getElementById("player-sum-el");
 const dealerSumEl = document.getElementById("dealer-sum-el");
 
 const h1El = document.getElementById("h1-el");
-const splashDiv = document.querySelector(".splash");
-const form = document.querySelector("form");
-const main = document.querySelector("main");
-
 const newRoundBtn = document.getElementById("new-round-btn")
 const hitBtn = document.getElementById("hit-btn");
 const standBtn = document.getElementById("stand-btn")
 
-
-// determine card value
+// determining card value
 const valueOptions = ["2", "3", "4", "5", "6", "7", "8", "9", 
 "10", "JACK", "QUEEN", "KING", "ACE"]
 
 // initializing board
 disable(hitBtn)
 disable(standBtn)
-dealerSumEl.style.visibility = "hidden";
-getNewDeck()
-
+let playerCards = [];
+let dealerCards = [];
+let message = ""
+let chips = 0
+dealerSumEl.textContent = "Sum: ?";
 
 // FUNCTIONS //
-
-//Submit names on click //
-// form.addEventListener('submit', function(e) {
-//     e.preventDefault();
-//     splashDiv.style.display = 'none';
-//     main.style.display = 'block';
-//     let player = {
-//         name: document.getElementById("name-input").value,
-//         chips: document.getElementById("chips-input").value
-//     };
-//     playerEl.textContent = player.name + " ($" + player.chips + ")";
-//     newRound()
-//     })
-
-
 
 function compareSums() {
     let playerSum = getPlayerSum()
     let dealerSum = getDealerSum()
-    // let chips = getChipsValue()
-    const bet = 10
+
    //house rules
    if ((playerCards.length === 5 && playerSum === 21) && !(dealerSum === 21)) {
-    message = "Blackjack! You win triple money!"
-    chips += bet * 3
-    }
-
-    else if ((playerCards.length === 5 && playerSum < 21) && playerSum > dealerSum) {
-        message = "You win double money!"
-        chips += bet * 2
+        message = "Blackjack! You win triple money!"
+        chips += (bet + (bet*3))
+        revealEarnings("win", (bet + (bet*3)))
     }
 
     else if (dealerCards.length === 5 && dealerSum === 21) {
-        message = "Dealer has Blackjack...You lose triple money!"
-        chips -= bet * 3
+        message = "Dealer has Blackjack... You lose triple money!"
+        chips -= bet * 2
+        revealEarnings("lose", bet * 3)
+    }
+
+    else if (playerCards.length === 5 && playerSum < 21) {
+        message = "Full hand! You win double money!"
+        chips += (bet + (bet*2))
+        revealEarnings("win", (bet + (bet*2)))
     }
 
     else if (dealerCards.length === 5 && dealerSum < 21) {
-        message = "You lose double money!"
-        chips -= bet * 2
+        message = "Dealer has full hand... You lose double money!"
+        chips -= bet * 1
+        revealEarnings("lose", bet * 2)
     }
 
     //casino rules
     else if (playerSum === 21 && !(dealerSum === 21)) {
         message = "Blackjack! Double money!";
         h1El.classList.add("blackjack-text-effect");
-        chips += bet * 2
+        chips += (bet + (bet*2))
+        revealEarnings("win", (bet + (bet*2)))
     }
 
     else if (!(playerSum === 21) && dealerSum === 21) {
         message = "Dealer has Blackjack...You lose double money!"
-        chips -= bet * 2
+        chips -= bet * 1
+        revealEarnings("lose", bet * 2)
     }
 
     else if (playerSum > 21 && dealerSum < 21) {
         message = "You lose..."
-        chips -= bet 
+        // chips -= bet 
+        revealEarnings("lose", bet)
     }
     
     else if (playerSum < 21 && dealerSum > 21) {
         message = "You win!"
-        chips += bet
+        chips += (bet + (bet*1))
+        revealEarnings("win", (bet + (bet*1)))
     }
     
     else if (playerSum < 21 && dealerSum < 21 && playerSum > dealerSum) {
         message = "You win!"
-        chips += bet
+        chips += (bet + (bet*1))
+        revealEarnings("win", (bet + (bet*1)))
     }
     
     else if (playerSum < 21 && dealerSum < 21 && playerSum < dealerSum) {
         message = "You lose..."
-        chips -= bet
+        // chips -= bet
+        revealEarnings("lose", bet)
     }
 
     if (playerSum === dealerSum || (playerSum > 21 && dealerSum > 21)) { 
         message = "Draw!"
+        chips += bet
+        revealEarnings("draw", bet)
     }
     messageEl.textContent = message;
     document.getElementById("chips-display").textContent = `$${chips}`
@@ -178,50 +160,57 @@ function getDealerSum() {
 
 async function newRound() {
     await resetBoardforNewRound()
-    // fetchCardsDealer()
-    // drawCards(2)
-    playerCards.push(await dealCard())
-    dealerCards.push(await dealCard())
-    playerCards.push(await dealCard())
-    dealerCards.push(await dealCard())
+    playerCards.push(await dealCard(deckId))
+    dealerCards.push(await dealCard(deckId))
+    playerCards.push(await dealCard(deckId))
+    dealerCards.push(await dealCard(deckId))
     renderPlayerCards()
     renderDealerCards()
     getPlayerSum()
     getDealerSum()
+    chips -= bet
+    document.getElementById("chips-display").textContent = `$${chips}`
 
-
+    //If player goes over 21 to finish the game and open the dealers cards
+    const playerSum = getPlayerSum()
+    if (playerSum >= 21) {
+        stand()
+    } 
 }
 
 async function hit() {
     if(playerCards.length < 5) {
-        playerCards.push(await dealCard())
+        playerCards.push(await dealCard(deckId))
     } 
     renderPlayerCards()
     //If player goes over 21 to finish the game and open the dealers cards
     const playerSum = getPlayerSum()
     if (playerSum >= 21) {
         stand()
-        compareSums()
     } 
-
 }
 
 async function stand() {
     let dealerSum = getDealerSum()
     //To hit the Dealer till he's over 17 or over
     while(dealerSum < 17) {
-         dealerCards.push(await dealCard())
+        dealerCards.push(await dealCard(deckId))
         dealerSum = getDealerSum()
     }
     if (dealerSum >= 17){
         compareSums()
     }
-    dealerSumEl.textContent = "Sum: " + dealerSum
-    revealDealerCards()
-    enable(newRoundBtn)
-    disable(hitBtn) 
-    disable(standBtn)
-  }
+
+    if (chips <= 0) {
+        gameOver()
+    } else {
+        dealerSumEl.textContent = "Sum: " + dealerSum
+        revealDealerCards()
+        enable(newRoundBtn)
+        disable(hitBtn) 
+        disable(standBtn)
+    } 
+}
  
 //renders remaining cards and score 
 function revealDealerCards() {
@@ -286,28 +275,37 @@ function renderDealerCards() {
 }
 
 
-async function getNewDeck() {
-    try {
-        let res = await fetch("https://apis.scrimba.com/deckofcards/api/deck/new/shuffle/")
-        let data = await res.json()
-        deckId = data.deck_id
+function revealEarnings(result, amount) {
+    const betEl = document.getElementById("bet-el")
+    betEl.style.opacity="1"
+    
+    if(result === "win") {
+        betEl.classList.add("win-color")
+        betEl.textContent = `+ $${amount}`
+    } else if (result === "lose"){
+        betEl.classList.add("lose-color")
+        betEl.textContent = `- $${amount}`
+    } else {
+        betEl.classList.add("draw-color")
+        betEl.textContent = `+ $${amount}`
     }
-    catch(err) {
-        console.log(err)
-    }
+      setTimeout(() => {
+        document.getElementById("bet-el").style.opacity="0"
+        betEl.textContent = ""
+        betEl.classList.remove("win-color", "lose-color", "draw-color")
+      }, 3000)
 }
 
-async function dealCard() {
-    try {
-        let res = await fetch(`https://apis.scrimba.com/deckofcards/api/deck/${deckId}/draw/?count=1`)
-        let data = await res.json()
-        return data.cards[0]
-    }
-    catch(err) {
-        console.log(err)
-    }
-}
+function gameOver() {
+    messageEl.textContent = "GAME OVER... NEW GAME?"
+    disable(hitBtn)
+    disable(standBtn)
+    disable(newRoundBtn)
+    setTimeout(() => {
+        modal.style.display = "flex"
+    }, 3000)
 
+}
 
 function disable(button) {
     button.disabled = true
@@ -335,27 +333,66 @@ hitBtn.addEventListener("click", hit)
 standBtn.addEventListener("click", stand)
 
 
-///////////////
 //// MODAL ////
-///////////////
-
+const modal = document.getElementById("modal")
+const playerEl = document.getElementById("player-el");
+const inputFields = document.getElementsByTagName("input")
+const nameInput = document.getElementById("name-input")
 const chipsInput = document.getElementById("chips-input")
-// const chipsValue = Number(chipsInput.value)
 const submitBtn = document.getElementById("submit-btn")
-// let chips = getChipsValue()
-let chips = 0
-submitBtn.addEventListener("click", handleChips)
+const kingImg = document.getElementById("king-img")
+const bubbleText = document.getElementById("bubble-text")
+const bubble = document.getElementById("bubble")
+submitBtn.addEventListener("click", handleSubmit)
 
-function handleChips() {
-    getChipsValue()
-    renderChips()
-    // chipsInput.value = ""
-}
-
-function getChipsValue() {
+function handleSubmit(e) {
+    e.preventDefault()
+    // grab inputs    
     chips = Number(chipsInput.value)
-}
+    playerEl.textContent = nameInput.value
 
-function renderChips() {
-    document.getElementById("chips-display").textContent = `$${chipsInput.value}`
+    for (let i = 0; i<inputFields.length; i++) {
+        inputFields[i].classList.remove("alert-outline")
+    }
+
+    //validates
+    if ( nameInput.value == null ||  nameInput.value == "") {
+        bubble.style.opacity = "1"
+        bubbleText.textContent = "YOUR NAME?"
+        submitBtn.classList.add("alert-btn")
+        nameInput.classList.add("alert-outline")
+        kingImg.classList.add("alert-king")
+        return false
+    } else if (chipsInput.value == null || chipsInput.value == 0) {
+        bubble.style.opacity = "1"
+        bubbleText.textContent = "YOUR CHIPS?"
+        submitBtn.classList.add("alert-btn")
+        chipsInput.classList.add("alert-outline")
+        kingImg.classList.add("alert-king")
+        return false 
+    } else {
+        // prepares the game and reset the board
+        document.getElementById("chips-display").textContent = `($${chips})`
+        for (let i = 0; i<inputFields.length; i++) {
+            inputFields[i].value = ""
+        }
+        modal.style.display = "none"
+        enable(newRoundBtn)
+        chipsInput.value = ""
+        for (let i = 0; i<5; i++) {
+            playerContainer.children[i].innerHTML = ""
+            dealerContainer.children[i].innerHTML = ""
+        }
+        playerSumEl.textContent = "Sum: ?"
+        dealerSumEl.textContent = "Sum: ?"
+        messageEl.textContent = "Want to play a round?"
+        document.querySelector("div#dealer-container .card-slot:nth-child(2)").classList.remove("grey-bg")
+        document.querySelector("div#dealer-container .card-slot:nth-child(2)").removeAttribute("data-after")
+        bubble.style.opacity = "0"
+        bubbleText.textContent = ""
+        submitBtn.classList.remove("alert-btn")
+        nameInput.classList.remove("alert-outline")
+        chipsInput.classList.remove("alert-outline")
+        kingImg.classList.remove("alert-king")
+    }
 }
