@@ -1,27 +1,25 @@
 ******** HOW TO PLAY THE GAME ********
 1) Input your name and your chips stack, click SUBMIT
+2) Click NEW ROUND to get started
 2) Click the HIT button to draw new cards, and try to get as close as possible to or even hit 21 in total card value, without going over...
 3) When you're happy with your cards, click the STAY button to reveal the dealer's hand and find out if you've won or lost.
 
 ******** Credits ********
  - animated gradient text
  https://web.dev/speedy-css-tip-animated-gradient-text/
+ - speech bubble: https://codepen.io/dudleystorey/pen/wMLBLK
 
- - Saving user input in JS objects
- https://www.youtube.com/watch?v=NxVCq4p0Kb0
 
- ******** KNOWN ISSUES / QUESTIONS ********
- - removing the "number" paremeter in drawCards throws error / drawCards(1, playerContainer, playerCards)
+
+ ******** QUESTIONS ********
+ - how to transition the cards when fetched? It should only apply to the new card being dealt.
  
 ******** TO DO ********
- - JS: Simplify the HIT and STAY conditional styles in JS (probably with query selector etc. similar to the h1 effect)
- - Implement winning/losing chips 
- - Code ace's value either 1 or 11 depending on when it is drawn
- - CSS color variables
  - Avatar picker for the player (based on Per's emoji fighter, with a dropdown menu)
- - Implement a modal window for rules
+ - Bet variable + House rules variables
+ - Modal for rules
 
- - WAY DOWN THE LINE: multi-player (radio input?) + code
+ - WAY DOWN THE LINE: multi-player
  ---How many players--------------------
 |                                       |
 | o 1 player  o 2 players  o 3 players  |
